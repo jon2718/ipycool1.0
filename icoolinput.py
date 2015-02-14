@@ -1,4 +1,6 @@
 from icoolobject import *
+from namelists import *
+from regions import *
 
 
 class ICoolInput(ICoolObject):

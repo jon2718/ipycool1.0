@@ -1,4 +1,4 @@
-from icoolnamelistcontiner import *
+from icoolnamelistcontainer import *
 
 
 class Ncv(ICoolNameListContainer):

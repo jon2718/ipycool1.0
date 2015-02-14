@@ -1,4 +1,4 @@
-from icoolregion import *
+from region import *
 
 
 class PseudoRegion(Region):

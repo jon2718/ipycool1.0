@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from container import *
 from distribution import *
 from correlation import *

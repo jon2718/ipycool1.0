@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from icoolinput import *
-from namelists import *
 from fields import *
 from material import *
+from icoolinput import *
+
 
 
 """Nomenclature:
