@@ -1,4 +1,5 @@
 from regularregion import RegularRegion
+from region import Region
 
 
 class SubRegion(RegularRegion):
