@@ -1,5 +1,5 @@
 from regularregioncontainer import *
-from subregion import *
+# from subregion import SubRegion
 
 
 class SRegion(RegularRegionContainer):

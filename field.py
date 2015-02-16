@@ -1,5 +1,4 @@
-from modeledcommandparameter import *
-
+from modeledcommandparameter import ModeledCommandParameter
 
 class Field(ModeledCommandParameter):
 

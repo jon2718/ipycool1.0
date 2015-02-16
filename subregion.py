@@ -1,4 +1,4 @@
-from regularregion import *
+from regularregion import RegularRegion
 
 
 class SubRegion(RegularRegion):

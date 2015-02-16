@@ -1,5 +1,4 @@
-from icoolobject import *
-
+from icoolobject import ICoolObject
 
 class ModeledCommandParameter(ICoolObject):
 
@@ -326,3 +325,4 @@ class ModeledCommandParameter(ICoolObject):
             file.write('\n')
             file.write(self.get_endtag())
             file.write('\n')
+

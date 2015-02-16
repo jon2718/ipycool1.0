@@ -1,6 +1,7 @@
-from icoolobject import *
 from namelists import *
 from regions import *
+from icoolobject import ICoolObject
+from title import Title
 
 
 class ICoolInput(ICoolObject):

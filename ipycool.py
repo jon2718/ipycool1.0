@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-from fields import *
-from material import *
+
 from icoolinput import *
-
-
 
 """Nomenclature:
 

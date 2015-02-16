@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from modeledcommandparameter import *
+# from modeledcommandparameter import *
+from modeledcommandparameter import ModeledCommandParameter
 
 
 class Material(ModeledCommandParameter):

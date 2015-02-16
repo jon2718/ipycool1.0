@@ -2,7 +2,6 @@
 import sys
 import icool_exceptions as ie
 
-
 class ICoolObject(object):
 
     """Generic ICOOL object providing methods for"""
@@ -259,3 +258,9 @@ class ICoolObject(object):
 
     def get_line_splits(self):
         return self.for001_format['line_splits']
+
+from field import Field
+from material import Material
+from distribution import Distribution
+from correlation import Correlation
+from subregion import SubRegion
