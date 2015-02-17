@@ -219,6 +219,12 @@ class ICoolObject(object):
                 return True
             else:
                 return False
+                  
+        if icool_type == 'ICoolComposite':
+            if isinstance(provided_type, ICoolComposite):
+                return True
+            else:
+                return False
 
     def get_command_params(self):
         return self.command_params

@@ -36,8 +36,9 @@ class Section(RegularRegionContainer):
         'Rotate',
         'Tilt',
         'Transport',
-        'Comment'
-        'Repeat']
+        'Comment',
+        'Repeat',
+        'HardEdgeSol']
 
     command_params = {
 

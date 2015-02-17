@@ -119,7 +119,8 @@ class ICoolInput(ICoolObject):
     def add_sec(self, sec):
         self.sec = sec
 
-    def gen(self, file):
+    def gen(self, f):
+        file = open(f, 'w')
         if self.title is not None:
             self.title.gen_for001(file)
         if self.cont is not None:
@@ -142,3 +143,4 @@ class ICoolInput(ICoolObject):
             self.ncv.gen_for001(file)
         if self.section is not None:
             self.section.gen_for001(file)
+        file.close()

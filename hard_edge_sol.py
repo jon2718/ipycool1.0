@@ -2,9 +2,10 @@ from sol import Sol
 from material import Material
 from subregion import SubRegion
 from sregion import SRegion
-from region import Region
+from icoolobject import ICoolObject
 
-class HardEdgeSol(Region):
+
+class HardEdgeSol(ICoolObject):
     """
     Hard edge solenoid comprises:
     (1) Entrance focusing region;
@@ -71,19 +72,19 @@ class HardEdgeSol(Region):
     }
     
     def __init__(self, **kwargs):
-        Region.__init__(self, kwargs)
+        ICoolObject.__init__(self, kwargs)
         material = Material(geom=self.geom, mtag=self.mtag)
         
         # Entrance SRegion
         sol_ent = Sol(model='edge', ent_def=0, ex_def=0, foc_flag=2, bs=self.bs)
         ent_subregion = SubRegion(material=material, rlow=0, rhigh=self.rhigh, irreg=1, field=sol_ent)
-        self.sreg_entrance = SRegion(zstep=self.zstep, nrreg=1, slen=0)
+        self.sreg_entrance = SRegion(zstep=self.zstep, nrreg=1, slen=self.slen)
         self.sreg_entrance.add_enclosed_command(ent_subregion)
 
         # Exit SRegion
         sol_exit = Sol(model='edge', ent_def=0, ex_def=0, foc_flag=1, bs=self.bs)
         exit_subregion = SubRegion(material=material, rlow=0, rhigh=self.rhigh, irreg=1, field=sol_exit)
-        self.sreg_exit = SRegion(zstep=self.zstep, nrreg=1, slen=0)
+        self.sreg_exit = SRegion(zstep=self.zstep, nrreg=1, slen=self.slen)
         self.sreg_exit.add_enclosed_command(exit_subregion)
 
         # Body SRegion
@@ -93,10 +94,13 @@ class HardEdgeSol(Region):
         self.sreg_body.add_enclosed_command(body_subregion)
 
     def __call__(self, **kwargs):
-        Region.__call__(self, kwargs)
+        ICoolObject.__call__(self, kwargs)
+
+    def __str__(self):
+        return 'HardEdgeSol'
 
     def gen_for001(self, file):
-        self.sreg_entrance.gen_for001(self, file)
-        self.sreg_body.gen_for001(self, file)
-        self.sreg_exit.gen_for001(self, file)
+        self.sreg_entrance.gen_for001(file)
+        self.sreg_body.gen_for001(file)
+        self.sreg_exit.gen_for001(file)
 
