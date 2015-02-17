@@ -1,5 +1,6 @@
 from regularregioncontainer import *
-
+import copy
+from output import Output
 
 class Repeat(RegularRegionContainer):
 

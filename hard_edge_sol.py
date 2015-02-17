@@ -2,10 +2,12 @@ from sol import Sol
 from material import Material
 from subregion import SubRegion
 from sregion import SRegion
+from icool_composite import ICoolComposite
 from icoolobject import ICoolObject
+from repeat import Repeat
 
 
-class HardEdgeSol(ICoolObject):
+class HardEdgeSol(ICoolComposite):
     """
     Hard edge solenoid comprises:
     (1) Entrance focusing region;
@@ -14,7 +16,7 @@ class HardEdgeSol(ICoolObject):
     """
     begtag = ''
     endtag = ''
-    num_params = 1
+    num_params = 10
 
     command_params = {
         'mtag': {'desc': 'Material tag',
@@ -67,8 +69,12 @@ class HardEdgeSol(ICoolObject):
                               'doc': '',
                               'type': 'SRegion',
                               'req': False,
+                              'pos': None},
+        'rep_body':  {'desc': 'Wrapped output SRegion',
+                              'doc': '',
+                              'type': 'Repeat',
+                              'req': False,
                               'pos': None}
-
     }
     
     def __init__(self, **kwargs):
@@ -92,6 +98,8 @@ class HardEdgeSol(ICoolObject):
         body_subregion = SubRegion(material=material, rlow=0, rhigh=self.rhigh, irreg=1, field=sol_body)
         self.sreg_body = SRegion(zstep=self.zstep, nrreg=1, slen=self.slen)
         self.sreg_body.add_enclosed_command(body_subregion)
+        self.rep_body = Repeat.wrapped_sreg(outstep=self.outstep, sreg=self.sreg_body)
+
 
     def __call__(self, **kwargs):
         ICoolObject.__call__(self, kwargs)
@@ -101,6 +109,6 @@ class HardEdgeSol(ICoolObject):
 
     def gen_for001(self, file):
         self.sreg_entrance.gen_for001(file)
-        self.sreg_body.gen_for001(file)
+        self.rep_body.gen_for001(file)
         self.sreg_exit.gen_for001(file)
 
