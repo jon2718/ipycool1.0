@@ -2,6 +2,7 @@ from namelists import *
 from regions import *
 from icoolobject import ICoolObject
 from title import Title
+from icool_composites import *
 
 
 class ICoolInput(ICoolObject):

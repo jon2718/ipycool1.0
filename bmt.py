@@ -24,5 +24,9 @@ class Bmt(ICoolNameListContainer):
         ICoolObject.__init__(self, kwargs)
         Container.__init__(self)
 
+    def __call__(self, **kwargs):
+        #Need to figure out how to call container
+        pass
+
     def __setattr__(self, name, value):
         Container.__setattr__(self, name, value)

@@ -402,6 +402,9 @@ class Cont(ICoolNameList):
     def __init__(self, **kwargs):
         ICoolObject.__init__(self, kwargs)
 
+    def __call__(self, **kwargs):
+        ICoolObject.__init__(self, kwargs)
+
     def __str__(self):
         return ICoolObject.__str__(self, 'CONT')
 

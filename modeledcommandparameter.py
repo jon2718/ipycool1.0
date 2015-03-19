@@ -1,4 +1,6 @@
 from icoolobject import ICoolObject
+import icool_exceptions as ie
+import sys
 
 class ModeledCommandParameter(ICoolObject):
 

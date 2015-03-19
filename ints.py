@@ -253,3 +253,6 @@ class Ints(ICoolNameList):
 
     def __init__(self, **kwargs):
         ICoolObject.__init__(self, kwargs)
+
+    def __call__(self, **kwargs):
+        ICoolObject.__call__(self, kwargs)

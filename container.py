@@ -8,7 +8,6 @@ class Container(ICoolObject):
 
     def __init__(self, enclosed_commands=None):
         if enclosed_commands is None:
-            print "Setting self.enclosed_commands to []"
             self.enclosed_commands = []
         else:
             if self.check_allowed_enclosed_commands(enclosed_commands):
@@ -50,6 +49,7 @@ class Container(ICoolObject):
         del self.enclosed_commands[delete_point]
 
     def check_allowed_enclosed_command(self, command):
+        #print 'Base classes are: ', self.__class__.__bases__
         try:
             if command.__class__.__name__ not in self.allowed_enclosed_commands:
                 raise ie.ContainerCommandError(

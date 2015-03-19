@@ -13,6 +13,7 @@ class HardEdgeSol(ICoolComposite):
     (1) Entrance focusing region;
     (2) Non-focusing constant solenoid region;
     (3) Exit focusing region
+    Lengths of each SRegion will be 1/3 total length specified.
     """
     begtag = ''
     endtag = ''
@@ -80,23 +81,25 @@ class HardEdgeSol(ICoolComposite):
     def __init__(self, **kwargs):
         ICoolObject.__init__(self, kwargs)
         material = Material(geom=self.geom, mtag=self.mtag)
+        length = (float(1)/float(3))*self.slen
+        print "length is: ", length
         
         # Entrance SRegion
         sol_ent = Sol(model='edge', ent_def=0, ex_def=0, foc_flag=2, bs=self.bs)
         ent_subregion = SubRegion(material=material, rlow=0, rhigh=self.rhigh, irreg=1, field=sol_ent)
-        self.sreg_entrance = SRegion(zstep=self.zstep, nrreg=1, slen=self.slen)
+        self.sreg_entrance = SRegion(zstep=self.zstep, nrreg=1, slen=length)
         self.sreg_entrance.add_enclosed_command(ent_subregion)
 
         # Exit SRegion
         sol_exit = Sol(model='edge', ent_def=0, ex_def=0, foc_flag=1, bs=self.bs)
         exit_subregion = SubRegion(material=material, rlow=0, rhigh=self.rhigh, irreg=1, field=sol_exit)
-        self.sreg_exit = SRegion(zstep=self.zstep, nrreg=1, slen=self.slen)
+        self.sreg_exit = SRegion(zstep=self.zstep, nrreg=1, slen=length)
         self.sreg_exit.add_enclosed_command(exit_subregion)
 
         # Body SRegion
         sol_body = Sol(model='edge', ent_def=0, ex_def=0, foc_flag=0, bs=self.bs)
         body_subregion = SubRegion(material=material, rlow=0, rhigh=self.rhigh, irreg=1, field=sol_body)
-        self.sreg_body = SRegion(zstep=self.zstep, nrreg=1, slen=self.slen)
+        self.sreg_body = SRegion(zstep=self.zstep, nrreg=1, slen=length)
         self.sreg_body.add_enclosed_command(body_subregion)
         self.rep_body = Repeat.wrapped_sreg(outstep=self.outstep, sreg=self.sreg_body)
 
