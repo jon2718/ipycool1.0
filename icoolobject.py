@@ -6,17 +6,11 @@ class ICoolObject(object):
 
     """Generic ICOOL object providing methods for"""
 
-    def __init__(self, kwargs, cls=None):
-        if self.check_command_params_init(cls, kwargs) is False:
-            sys.exit(0)
-        else:
-            self.setall(kwargs)
+    def __init__(self, **kwargs):
+        pass
 
-    def __call__(self, kwargs, cls=None):
-        if self.check_command_params_call(kwargs) is False:
-            sys.exit(0)
-        else:
-            self.setall(kwargs)
+    def __call__(self, **kwargs):
+        pass
 
     def __str__(self, return_str):
         command_parameters_dict = self.command_params
@@ -31,24 +25,20 @@ class ICoolObject(object):
     def __repr__(self):
         return '[ICool Object]'
 
-    def __setattr__(self, name, value, cls=None):
-        if self.check_command_param(name, cls):
-            object.__setattr__(self, name, value)
-        else:
-            sys.exit(0)
+    def __icool_setattr__(self, name, value, command_params_dict):
+        if (self.check_command_param_valid(name, command_params_dict) and
+            self.check_command_param_type(name, value, command_params_dict)):
+                object.__setattr__(self, name, value)
 
-    def check_command_param(self, command_param, cls=None):
+    def check_command_param_valid(self, command_param, command_params_dict):
         """
-        Checks whether a parameter specified for command is valid.
+        Checks whether a specific parameter specified for command is valid.
         """
-        command_params_dict = self.get_command_params(cls)
-           
-        # Check command parameters are all valid
         try:
-            if command_param not in command_parameters_dict:
+            if command_param not in command_params_dict:
                 raise ie.InvalidCommandParameter(
                     command_param,
-                    command_parameters_dict.keys())
+                    command_params_dict.keys())
         except ie.InvalidCommandParameter as e:
             print e
             return False
@@ -57,14 +47,13 @@ class ICoolObject(object):
             return False
         return True
 
-     """Checks whether all required command parameters specified in __init__ are provided are valid
+    """Checks whether all required command parameters specified in __init__ are provided are valid
     for the command.
     Valid means the parameters are recognized for the command, all required parameters are provided
     and the parameters are the correct type."""
     def check_command_params_valid(
             self,
-            command_params,
-            command_parameters_dict):
+            command_parameters_dict, **command_params):
         """Returns True if command_params are valid (correspond to the command)
         Otherwise raises an exception and returns False"""
         try:
@@ -80,11 +69,11 @@ class ICoolObject(object):
 
     def check_all_required_command_params_specified(
             self,
-            command_params,
-            command_parameters_dict):
+            command_parameters_dict,
+            **command_params
+            ):
         """Returns True if all required command parameters were specified
         Otherwise raises an exception and returns False"""
-        # command_parameters_dict = self.get_command_params()
         try:
             for key in command_parameters_dict:
                 if self.is_required(key, command_parameters_dict):
@@ -95,8 +84,8 @@ class ICoolObject(object):
             return False
         return True
 
-    def check_command_params_type(self, command_params, command_params_dict):
-        """Checks to see whether all required command parameters specified were of the correct type"""
+    def check_command_params_type(self, command_params_dict, **command_params):
+        """Checks to see whether all command parameters specified were of the correct type"""
         try:
             for key in command_params:
                 if self.check_type(
@@ -110,9 +99,8 @@ class ICoolObject(object):
             return False
         return True
 
-    def check_command_param_type(self, name, value, cls=None):
+    def check_command_param_type(self, name, value, command_params_dict):
         """Checks to see whether a particular command parameter of name with value is of the correct type"""
-        command_params_dict = self.get_command_params()
         try:
             if self.check_type(
                     command_params_dict[name]['type'],
@@ -125,47 +113,34 @@ class ICoolObject(object):
             return False
         return True
 
-    def check_command_params_init(self, command_params, cls=None):
+    def check_command_params_init(self, command_params_dict, **kwargs):
         """
         Checks whether the parameters specified for command are valid, all required parameters are
         specified and all parameters are of correct type.  If not, raises an exception.
         """
-        #print 'Base classes are: ', self.__class__.__bases__
-        #command_parameters_dict = self.get_command_params()
-        if cls is None:
-            command_parameters_dict = self.get_command_params()
-        else:
-            command_params_dict = self.get_command_params(cls)
-        print 'Command parameters dict is: ', command_parameters_dict
         check_params = not self.check_command_params_valid(
-            command_params,
-            command_parameters_dict) or not self.check_all_required_command_params_specified(
-            command_params,
-            command_parameters_dict) or not self.check_command_params_type(
-            command_params,
-            command_parameters_dict)
-
+            command_params_dict, **kwargs) or not self.check_all_required_command_params_specified(
+            command_params_dict, **kwargs) or not self.check_command_params_type(
+            command_params_dict, **kwargs)
         if check_params:
             return False
         else:
             return True
 
-    def check_command_params_call(self, command_params, cls=None):
+    def check_command_params_call(self, command_params_dict, **command_params):
         """
         Checks whether the parameters specified for command are valid and all required parameters exist.
         """
-        command_parameters_dict = self.get_command_params()
-        return self.check_command_params_valid(command_params, command_parameters_dict) and\
+        return self.check_command_params_valid(command_params, command_params_dict) and\
             self.check_command_params_type(
             command_params,
-            command_parameters_dict)
+            command_params_dict)
 
-    def setall(self, command_params):
+    def setall(self, command_params_dict, **command_params):
         for key in command_params:
-            self.__setattr__(key, command_params[key])
+            self.__icool_setattr__(key, command_params[key], command_params_dict)
 
-    def setdefault(self, command_params):
-        command_params_dict = self.get_command_params()
+    def setdefault(self, command_params_dict, **command_params):
         for key in command_params_dict:
             if key not in command_params:
                 self.__setattr__(key, command_params_dict[key]['default'])
@@ -176,7 +151,7 @@ class ICoolObject(object):
         """
         provided_type_name = provided_type.__class__.__name__
         print icool_type, provided_type_name
-        if icool_type == 'Real':
+        if icool_type == 'Float':
             if provided_type_name == 'int' or provided_type_name == 'long' or provided_type_name == 'float':
                 return True
             else:
@@ -230,14 +205,7 @@ class ICoolObject(object):
             else:
                 return False
 
-    def get_command_params(self, cls=None):
-        if cls is None:
-            return self.command_params
-        else:
-            return cls.command_params
-
     def is_required(self, command_param, command_parameters_dict):
-        # command_parameters_dict = self.get_command_params()
         if 'req' not in command_parameters_dict[command_param]:
             return True
         else:
@@ -245,7 +213,6 @@ class ICoolObject(object):
 
     def gen_parm(self):
         command_params = self.get_command_params()
-        #parm = [None] * len(command_params)
         parm = [None] * self.num_params
         for key in command_params:
             pos = int(command_params[key]['pos']) - 1
@@ -272,8 +239,8 @@ class ICoolObject(object):
     def get_line_splits(self):
         return self.for001_format['line_splits']
 
-from field import Field
-from material import Material
-from distribution import Distribution
-from correlation import Correlation
-from subregion import SubRegion
+#from field import Field
+#from material import Material
+#from distribution import Distribution
+#from correlation import Correlation
+#from subregion import SubRegion

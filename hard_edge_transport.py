@@ -12,7 +12,8 @@ class HardEdgeTransport(ICoolComposite, Cell):
     """
     begtag = ''
     endtag = ''
-    num_params = 1
+    num_params = 3
+    classname = 'HardEdgeTransport'
 
     command_params = {
         'bs':   {'desc': 'Field strength (Tesla)',
@@ -23,7 +24,7 @@ class HardEdgeTransport(ICoolComposite, Cell):
 
         'flip':   {'desc': 'Cell flip',
                    'doc': 'If .true. flip cell field for alternate cells',
-                   'type': 'Boolean',
+                   'type': 'Logical',
                    'req': True,
                    'pos': None},
 
@@ -35,13 +36,19 @@ class HardEdgeTransport(ICoolComposite, Cell):
     }
     
     def __init__(self, **kwargs):
-        ICoolObject.__init__(self, kwargs)
+        if ICoolObject.check_command_params_init(self, HardEdgeTransport.command_params, **kwargs) is False:
+            sys.exit(0)
+        else:
+            ICoolObject.setall(self, HardEdgeTransport.command_params, **kwargs)
         he_sol = Sol(model='edge', ent_def=0, ex_def=0, foc_flag=0, bs=self.bs)
-        Cell.__init__(self, ncells=1, flip=False, field=he_sol)
+        #Cell.__init__(self, ncells=1, flip=False, field=he_sol)
         
 
     def __call__(self, **kwargs):
         ICoolObject.__call__(self, kwargs)
+
+    def __setattr__(self, name, value):
+        ICoolObject.__icool_setattr__(self, name, value, HardEdgeTransport.command_params)
 
     def __str__(self):
         return 'HardEdgeTransport'

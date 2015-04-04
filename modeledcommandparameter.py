@@ -4,7 +4,7 @@ import sys
 
 class ModeledCommandParameter(ICoolObject):
 
-    def __init__(self, kwargs):
+    def __init__(self, **kwargs):
         """
         Checks to see whether all required parameters are specified.  If not, raises exception and exits.
         """
@@ -34,16 +34,16 @@ class ModeledCommandParameter(ICoolObject):
                     self.get_model_name_in_dict(kwargs))
                 del kwargs[self.get_model_descriptor_name()]
                 self.setall(kwargs)
-
-    def __setattr__(self, name, value):
+    
+    def __modeled_command_parameter_setattr__(self, name, value, models):
         # Check whether the attribute being set is the model
-        if name == self.get_model_descriptor_name():
-            if self.check_valid_model(value) is False:
+        if name == self.get_model_descriptor_name(models):
+            if self.check_valid_model(value, models) is False:
                 return
             new_model = False
             # Check whether this is a new model (i.e. model was previously
             # defined)
-            if hasattr(self, self.get_model_descriptor_name()):
+            if hasattr(self, self.get_model_descriptor_name(models)):
                 new_model = True
                 # Delete all attributes of the current model
                 print 'Resetting model to ', value
@@ -73,7 +73,7 @@ class ModeledCommandParameter(ICoolObject):
             desc = desc + key + ': ' + str(getattr(self, key)) + '\n'
         return desc
 
-    def set_keyword_args_model_specified(self, kwargs):
+    def set_keyword_args_model_specified(self, **kwargs):
         setattr(
             self,
             self.get_model_descriptor_name(),
@@ -83,7 +83,7 @@ class ModeledCommandParameter(ICoolObject):
             if not key == self.get_model_descriptor_name():
                 setattr(self, key, kwargs[key])
 
-    def set_keyword_args_model_not_specified(self, kwargs):
+    def set_keyword_args_model_not_specified(self, **kwargs):
         for key in kwargs:
             object.__setattr__(self, key, kwargs[key])
 
@@ -97,29 +97,36 @@ class ModeledCommandParameter(ICoolObject):
             if key is not self.get_model_descriptor_name():
                 setattr(self, key, 0)
 
-    def check_command_params_init(self, command_params):
+    def check_command_params_init(self, models, **command_params):
         """
         Checks if ALL keywords for a model are specified.  If not, raises InputArgumentsError.
         If model is not specified, raises ModelNotSpecifiedError.
         Initialization of a model (e.g., Accel, SOL, etc. requires all keywords specified)
         """
-        if self.check_no_model():
+        if self.check_no_model(models):
             return True
-        if not self.check_model_specified(command_params):
+        if not self.check_model_specified(models, **command_params):
             return False
         else:
             if not self.check_valid_model(
-                    self.get_model_name_in_dict(command_params)):
+                    self.get_model_name_in_dict(models, **command_params), models):
                 return False
             else:
-                command_params_dict = self.get_command_params_for_specified_input_model(
-                    command_params)
-                if not self.check_command_params_valid(command_params, command_params_dict) \
-                    or not self.check_all_required_command_params_specified(command_params, command_params_dict) \
-                        or not self.check_command_params_type(command_params, command_params_dict):
+                command_params_dict = self.get_command_params_for_specified_input_model(models,
+                    **command_params)
+                if not self.check_command_params_valid(command_params_dict, **command_params) \
+                    or not self.check_all_required_command_params_specified(command_params_dict, **command_params) \
+                        or not self.check_command_params_type(command_params_dict, **command_params):
                             return False
                 else:
-                    return True
+                    setattr(
+                    self,
+                    self.get_model_descriptor_name(models),
+                    self.get_model_name_in_dict(models, **command_params))
+                del command_params[self.get_model_descriptor_name(models)]
+                self.setall(self.get_model_parms_dict(models), **command_params)
+
+                return True
 
     def check_command_params_call(self, command_params):
         """
@@ -131,7 +138,7 @@ class ModeledCommandParameter(ICoolObject):
         """
         if not self.get_model_descriptor_name() in command_params.keys():
             command_params_dict = self.get_model_parms_dict()
-            if not self.check_command_params_valid(command_params, command_params_dict) \
+            if not self.check_command_params_valid(command_params_dict, **command_params) \
                 or not self.check_command_params_type(command_params, command_params_dict):
                     return False
             else:
@@ -139,14 +146,18 @@ class ModeledCommandParameter(ICoolObject):
         else:
             return self.check_command_params_init(command_params)
 
-    def check_valid_model(self, model):
+        def setall(self, command_params_dict, **command_params):
+        for key in command_params:
+            self.__modeled_command_parameter_setattr__(key, command_params[key], command_params_dict)
+
+    def check_valid_model(self, model, models):
         """
         Checks whether model specified is valid.
         If model is not valid, raises an exception and returns False.  Otherwise returns True.
         """
         try:
-            if not str(model) in self.get_model_names():
-                raise ie.InvalidModel(str(model), self.get_model_names())
+            if not str(model) in self.get_model_names(models):
+                raise ie.InvalidModel(str(model), self.get_model_names(models))
         except ie.InvalidModel as e:
             print e
             return False
@@ -168,7 +179,7 @@ class ModeledCommandParameter(ICoolObject):
                     actual_dict)
         return True
 
-    def check_partial_keywords_for_new_model(self, input_dict):
+    def check_partial_keywords_for_new_model(self, **input_dict):
         """
         Checks whether the keywords specified for a new model correspond to that model.
         """
@@ -182,96 +193,133 @@ class ModeledCommandParameter(ICoolObject):
                     actual_dict)
         return True
 
-    def check_model_specified(self, input_dict):
+    def check_model_specified(self, models, **input_dict):
         """
         Check whether the user specified a model in specifying parameters to Init or Call.
         if so, returns True.  Otherwise, raises an exception and returns False.
         """
         try:
-            if not self.get_model_descriptor_name() in input_dict.keys():
-                raise ie.ModelNotSpecified(self.get_model_names())
+            if not self.get_model_descriptor_name(models) in input_dict.keys():
+                raise ie.ModelNotSpecified(self.get_model_names(models))
         except ie.ModelNotSpecified as e:
             print e
             return False
         return True
 
-    def check_no_model(self):
-        if self.get_model_descriptor_name() is None:
+    def check_no_model(self, models):
+        #Returns true if there is no model descriptor name for the models.
+        if self.get_model_descriptor_name(models) is None:
             return True
         else:
             return False
+
+    ##################################################
     # Helper functions
     ##################################################
 
-    def get_model_descriptor(self):
-        """Returns the model descriptor dictionary"""
-        return self.models['model_descriptor']
+    # Models is a dictionary of the following form:
+    # {
+    #       model_descriptor: {
+    #           'desc': 'Name of model parameter descriptor',
+    #           'name': ,
+    #           'num_parms':,
+    #           'for001_format': {
+    #           'line_splits': }},
 
-    def get_model_descriptor_name(self):
+    #       }
+
+    #        model_1: {
+
+    #        ...
+
+    #           parms: {
+
+    #            }
+    #        }
+
+    #       model_2: {
+    #            ....
+    #            parms: {
+
+    #           }
+
+    #        }
+    # }
+
+    # Model Descriptor and Model Descriptor Name
+    def get_model_descriptor(self, models):
+        """Input:  Models dictionary
+           Output: Models descriptor dictionary"""
+        return models['model_descriptor']
+
+    def get_model_descriptor_name(self, models):
         """
         The model descriptor name is an alias name for the term 'model', which is specified for each descendent class.
         Returns the model descriptor name.
         """
-        return self.get_model_descriptor()['name']
+        return self.get_model_descriptor(models)['name']
 
-    def get_current_model_name(self):
-        """Returns the name of the current model"""
-        return getattr(self, self.get_model_descriptor_name())
-
-    def get_model_parms_dict(self):
+    def get_current_model_name(self, models):
+        """Returns the name of the current model for a modeledcommandparameter object."""
+        return getattr(self, self.get_model_descriptor_name(models))
+    
+    #Model Parameters
+    def get_model_parms_dict(self, models):
         """
         Returns the parameter dictionary for the current model.
         """
-        if self.get_model_descriptor_name() is None:
+        if self.get_model_descriptor_name(models) is None:
             return {}
         else:
-            return self.get_model_dict(self.get_current_model_name())
+            return self.get_model_dict(self.get_current_model_name(models))
 
-    def get_model_dict(self, model):
+    def get_model_dict(self, model, models):
         """
-        Returns the parameter dictionary for model name.
+        Given a model and models dictionary, returns the parameter dictionary for model name.
+        Input: (1) model and (2) models
+        Output: Dictinoary of parameters
         """
-        return self.models[str(model)]['parms']
-
-    def get_num_params(self):
+        return models[str(model)]['parms']
+  
+    def get_num_params(self, models):
         """
         Returns the number of parameters for model.
         """
-        return self.get_model_descriptor()['num_parms']
+        return self.get_model_descriptor(models)['num_parms']
 
-    def get_icool_model_name(self):
+    def get_icool_model_name(self, models):
         """Check to see whether there is an alternate icool_model_name from the common name.
         If so return that.  Otherwise, just return the common name."""
-        if 'icool_model_name' not in self.models[
-                str(self.get_current_model_name())]:
-            return self.get_current_model_name()
+        if 'icool_model_name' not in models[
+                str(self.get_current_model_name(models))]:
+            return self.get_current_model_name(models)
         else:
-            return self.models[str(self.get_current_model_name())][
+            return models[str(self.get_current_model_name(models))][
                 'icool_model_name']
 
-    def get_model_names(self):
+    def get_model_names(self, models):
         """Returns a list of all model names"""
-        ret_list = self.models.keys()
+        ret_list = models.keys()
         pos = ret_list.index('model_descriptor')
         del ret_list[pos]
         return ret_list
 
-    def get_model_name_in_dict(self, dict):
+    def get_model_name_in_dict(self, models, **dict):
         """Returns the model name in a provided dictionary if it exists.  Otherwise returns None"""
-        if self.get_model_descriptor_name() not in dict:
+        if self.get_model_descriptor_name(models) not in dict:
             return None
         else:
-            return dict[self.get_model_descriptor_name()]
+            return dict[self.get_model_descriptor_name(models)]
 
-    def get_command_params(self):
-        return self.get_model_parms_dict()
+    
 
     def get_command_params_for_specified_input_model(
             self,
-            input_command_params):
+            models,
+            **input_command_params):
         specified_model = input_command_params[
-            self.get_model_descriptor_name()]
-        return self.get_model_dict(specified_model)
+            self.get_model_descriptor_name(models)]
+        return self.get_model_dict(specified_model, models)
 
     def get_line_splits(self):
         return self.models['model_descriptor']['for001_format']['line_splits']
@@ -304,7 +352,6 @@ class ModeledCommandParameter(ICoolObject):
     def gen_for001(self, file):
         if hasattr(self, 'begtag'):
             print 'Writing begtag'
-            # file.write('\n')
             file.write(self.get_begtag())
             file.write('\n')
         parm = self.gen_parm()

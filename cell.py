@@ -53,8 +53,10 @@ class Cell(RegularRegionContainer):
     }
 
     def __init__(self, **kwargs):
-        RegularRegion.__init__(self, kwargs)
-        Container.__init__(self)
+        ICoolObject.check_command_params_init(self, Cell.command_params, **kwargs)
+        #RegularRegionContainer.__init__(self, **kwargs)
+        #RegularRegion.__init__(self, kwargs)
+        #Container.__init__(self)
 
     def __setattr__(self, name, value):
         Container.__setattr__(self, name, value)
