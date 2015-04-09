@@ -47,15 +47,16 @@ class ModeledCommandParameter(ICoolObject):
                 new_model = True
                 # Delete all attributes of the current model
                 print 'Resetting model to ', value
-                self.reset_model()
-            object.__setattr__(self, self.get_model_descriptor_name(), value)
+                self.reset_model(models)
+            object.__setattr__(self, self.get_model_descriptor_name(models), value)
             # If new model, set all attributes of new model to 0.
             if new_model is True:
-                self.set_and_init_params_for_model(value)
+                self.set_and_init_params_for_model(value, models)
             return
         try:
-            if self.check_command_param(name):
-                if self.check_command_param_type(name, value):
+            command_params_dict = self.get_model_parms_dict(models)
+            if self.check_command_param_valid(name, command_params_dict):
+                if self.check_command_param_type(name, value, command_params_dict):
                     object.__setattr__(self, name, value)
             else:
                 raise ie.SetAttributeError('', self, name)
@@ -87,14 +88,15 @@ class ModeledCommandParameter(ICoolObject):
         for key in kwargs:
             object.__setattr__(self, key, kwargs[key])
 
-    def reset_model(self):
-        for key in self.get_model_parms_dict():
+    def reset_model(self, models):
+        for key in self.get_model_parms_dict(models):
             if hasattr(self, key):
                 delattr(self, key)
 
-    def set_and_init_params_for_model(self, model):
-        for key in self.get_model_dict(model):
-            if key is not self.get_model_descriptor_name():
+    def set_and_init_params_for_model(self, model, models):
+        # Initializes all parameters for model to 0
+        for key in self.get_model_dict(model, models):
+            if key is not self.get_model_descriptor_name(models):
                 setattr(self, key, 0)
 
     def check_command_params_init(self, models, **command_params):
@@ -119,10 +121,10 @@ class ModeledCommandParameter(ICoolObject):
                         or not self.check_command_params_type(command_params_dict, **command_params):
                             return False
                 else:
-                    setattr(
-                    self,
+                    self.__modeled_command_parameter_setattr__(
                     self.get_model_descriptor_name(models),
-                    self.get_model_name_in_dict(models, **command_params))
+                    self.get_model_name_in_dict(models, **command_params),
+                    models)
                 del command_params[self.get_model_descriptor_name(models)]
                 self.setall(self.get_model_parms_dict(models), **command_params)
 
@@ -147,8 +149,8 @@ class ModeledCommandParameter(ICoolObject):
             return self.check_command_params_init(command_params)
 
         def setall(self, command_params_dict, **command_params):
-        for key in command_params:
-            self.__modeled_command_parameter_setattr__(key, command_params[key], command_params_dict)
+            for key in command_params:
+                self.__modeled_command_parameter_setattr__(key, command_params[key], command_params_dict)
 
     def check_valid_model(self, model, models):
         """
@@ -255,7 +257,7 @@ class ModeledCommandParameter(ICoolObject):
     def get_model_descriptor_name(self, models):
         """
         The model descriptor name is an alias name for the term 'model', which is specified for each descendent class.
-        Returns the model descriptor name.
+        Returns the current model descriptor name.
         """
         return self.get_model_descriptor(models)['name']
 
@@ -271,7 +273,7 @@ class ModeledCommandParameter(ICoolObject):
         if self.get_model_descriptor_name(models) is None:
             return {}
         else:
-            return self.get_model_dict(self.get_current_model_name(models))
+            return self.get_model_dict(self.get_current_model_name(models), models)
 
     def get_model_dict(self, model, models):
         """

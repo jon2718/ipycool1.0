@@ -300,6 +300,7 @@ class Sol(Field):
         Field.__call__(self, kwargs)
 
     def __setattr__(self, name, value):
+        self.__modeled_command_parameter_setattr__(name, value, Sol.models)
         if name == 'ftag':
             if value == 'SOL':
                 object.__setattr__(self, name, value)
