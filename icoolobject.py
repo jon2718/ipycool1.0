@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import icool_exceptions as ie
+import inspect
 
 class ICoolObject(object):
 
@@ -25,7 +26,9 @@ class ICoolObject(object):
     def __repr__(self):
         return '[ICool Object]'
 
-    def __icool_setattr__(self, name, value, command_params_dict):
+    def __icool_setattr__(self, name, value, command_params_dict = None):
+        if command_params_dict is None:
+            command_params_dict = self.get_all_ancestor_command_params()
         if (self.check_command_param_valid(name, command_params_dict) and
             self.check_command_param_type(name, value, command_params_dict)):
                 object.__setattr__(self, name, value)
@@ -113,11 +116,14 @@ class ICoolObject(object):
             return False
         return True
 
-    def check_command_params_init(self, command_params_dict, **kwargs):
+    def check_command_params_init(self, command_params_dict=None, **kwargs):
         """
         Checks whether the parameters specified for command are valid, all required parameters are
         specified and all parameters are of correct type.  If not, raises an exception.
         """
+
+        if command_params_dict is None:
+            command_params_dict = self.get_all_ancestor_command_params()
         check_params = not self.check_command_params_valid(
             command_params_dict, **kwargs) or not self.check_all_required_command_params_specified(
             command_params_dict, **kwargs) or not self.check_command_params_type(
@@ -125,6 +131,7 @@ class ICoolObject(object):
         if check_params:
             return False
         else:
+            self.setall(command_params_dict, **kwargs)
             return True
 
     def check_command_params_call(self, command_params_dict, **command_params):
@@ -239,8 +246,16 @@ class ICoolObject(object):
     def get_line_splits(self):
         return self.for001_format['line_splits']
 
-#from field import Field
-#from material import Material
-#from distribution import Distribution
-#from correlation import Correlation
-#from subregion import SubRegion
+    def get_all_ancestor_command_params(self):
+        ancestors = inspect.getmro(self.__class__)
+        dall = {}
+        for a in ancestors:
+            if hasattr(a, 'command_params'):
+                dall.update(a.command_params)
+        return dall
+
+from field import Field
+from material import Material
+from distribution import Distribution
+from correlation import Correlation
+from subregion import SubRegion

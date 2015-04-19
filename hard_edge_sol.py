@@ -2,12 +2,12 @@ from sol import Sol
 from material import Material
 from subregion import SubRegion
 from sregion import SRegion
-from icool_composite import ICoolComposite
 from icoolobject import ICoolObject
 from repeat import Repeat
+from modeledcommandparameter import *
 
 
-class HardEdgeSol(ICoolComposite):
+class HardEdgeSol(ICoolObject):
     """
     Hard edge solenoid comprises:
     (1) Entrance focusing region;
@@ -79,7 +79,8 @@ class HardEdgeSol(ICoolComposite):
     }
     
     def __init__(self, **kwargs):
-        ICoolObject.__init__(self, kwargs)
+        if ICoolObject.check_command_params_init(self, HardEdgeSol.command_params, **kwargs) is False:
+            sys.exit(0)
         material = Material(geom=self.geom, mtag=self.mtag)
         length = (float(1)/float(3))*self.slen
         print "length is: ", length
@@ -105,7 +106,10 @@ class HardEdgeSol(ICoolComposite):
 
 
     def __call__(self, **kwargs):
-        ICoolObject.__call__(self, kwargs)
+        pass
+
+    def __setattr__(self, name, value):
+        self.__icool_setattr__(name, value, HardEdgeSol.command_params)
 
     def __str__(self):
         return 'HardEdgeSol'

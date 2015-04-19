@@ -69,13 +69,14 @@ class Refp(ModeledCommandParameter, PseudoRegion):
     }
 
     def __init__(self, **kwargs):
-        ModeledCommandParameter.__init__(self, kwargs)
+        if ModeledCommandParameter.check_command_params_init(self, Refp.models, **kwargs) is False:
+            sys.exit(0)
 
     def __call__(self, **kwargs):
-        ModeledCommandParameter.__call__(self, kwargs)
+        pass
 
     def __setattr__(self, name, value):
-        ModeledCommandParameter.__setattr__(self, name, value)
+        self.__modeled_command_parameter_setattr__(name, value, Refp.models)
 
     def __str__(self):
-        return ModeledCommandParameter.__str__(self)
+        pass

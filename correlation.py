@@ -142,13 +142,14 @@ class Correlation(ModeledCommandParameter):
                             'pos': 4, 'type': 'Real', 'doc': 'Type flag.  x, y, x_prime, y_prime'}}}}
     
     def __init__(self, **kwargs):
-        ModeledCommandParameter.__init__(self, kwargs)
+        if ModeledCommandParameter.check_command_params_init(self, Correlation.models, **kwargs) is False:
+            sys.exit(0)
 
     def __call__(self, **kwargs):
-        ModeledCommandParameter.__call__(self, kwargs)
+        pass
 
     def __setattr__(self, name, value):
-        ModeledCommandParameter.__setattr__(self, name, value)
+        self.__modeled_command_parameter_setattr__(name, value, Correlation.models)
 
     def __str__(self):
         return self.corrtyp + ':' + 'Correlation:' + \

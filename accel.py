@@ -542,26 +542,22 @@ class Accel(Field):
                             'pos': 5, 'type': 'Real', 'doc': ''}}}}
                             
     def __init__(self, **kwargs):
-        Field.__init__(self, 'ACCEL', kwargs)
+        if ModeledCommandParameter.check_command_params_init(self, Accel.models, **kwargs) is False:
+            sys.exit(0)
 
     def __call__(self, **kwargs):
-        Field.__call__(self, kwargs)
+        pass
 
     def __setattr__(self, name, value):
-        if name == 'ftag':
-            if value == 'ACCEL':
-                object.__setattr__(self, name, value)
-            else:
+        self.__modeled_command_parameter_setattr__(name, value, Accel.models)
+        #if name == 'ftag':
+        #    if value == 'ACCEL':
+        #        object.__setattr__(self, name, value)
+        #    else:
                 # Should raise exception here
-                print '\n Illegal attempt to set incorrect ftag.\n'
-        else:
-            Field.__setattr__(self, name, value)
+        #        print '\n Illegal attempt to set incorrect ftag.\n'
+        #else:
+        #    Field.__setattr__(self, name, value)
 
     def __str__(self):
         return Field.__str__(self)
-
-    def gen_fparm(self):
-        Field.gen_fparm(self)
-
-    def gen(self, file):
-        Field.gen(self)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from field import *
+import sys
 
 
 class Sol(Field):
@@ -290,28 +291,14 @@ class Sol(Field):
                             'pos': 4, 'type': 'Real', 'doc': '(R) Multiplies field strength '}}}}
                                                                                                                                                             
     def __init__(self, **kwargs):
-        #Field.__init__(self, 'SOL', kwargs)
         if ModeledCommandParameter.check_command_params_init(self, Sol.models, **kwargs) is False:
             sys.exit(0)
-        #else:
-        #    self.setall(self, Sol.command_params, **kwargs)
 
     def __call__(self, **kwargs):
-        Field.__call__(self, kwargs)
+        pass
 
     def __setattr__(self, name, value):
         self.__modeled_command_parameter_setattr__(name, value, Sol.models)
-        if name == 'ftag':
-            if value == 'SOL':
-                object.__setattr__(self, name, value)
-            else:
-                # Should raise exception here
-                print '\n Illegal attempt to set incorrect ftag.\n'
-        #else:
-            #Field.__setattr__(self, name, value)
 
     def __str__(self):
         return Field.__str__(self)
-
-    def gen_fparm(self):
-        Field.gen_fparm(self)

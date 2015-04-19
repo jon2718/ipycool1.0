@@ -400,16 +400,19 @@ class Cont(ICoolNameList):
             'default': True}}
 
     def __init__(self, **kwargs):
-        ICoolObject.__init__(self, kwargs)
+        ICoolObject.check_command_params_init(self, Cont.command_params, **kwargs)
 
     def __call__(self, **kwargs):
-        ICoolObject.__init__(self, kwargs)
+        pass
+    
+    def __setattr__(self, name, value):
+        self.__icool_setattr__(name, value, Cont.command_params)
 
     def __str__(self):
         return ICoolObject.__str__(self, 'CONT')
 
     def __repr__(self):
-        return '[Control variables: ]'
+        return 'Requested repr for Cont'
 
     def gen(self, file):
         ICoolObject.gen(self, file)

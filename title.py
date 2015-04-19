@@ -11,13 +11,16 @@ class Title(ICoolObject):
     }
 
     def __init__(self, title):
-        self.title = title
+        ICoolObject.check_command_params_init(self, Title.command_params, **kwargs)
 
     def __str__(self):
         return 'Problem Title: ' + self.title + '\n'
 
     def __repr__(self):
         return 'Problem Title: ' + self.title + '\n'
+
+    def __setattr__(self, name, value):
+        self.__icool_setattr__(name, value, Title.command_params)
 
     def gen_for001(self, file):
         file.write(self.title)

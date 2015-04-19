@@ -315,13 +315,11 @@ class Material(ModeledCommandParameter):
                     'pos': 8, 'type': 'Real', 'doc': 'Total height of wedge in non-dispersion direction, h [m]'}}}}
 
     def __init__(self, **kwargs):
-        ModeledCommandParameter.__init__(self, kwargs)
+        if ModeledCommandParameter.check_command_params_init(self, Material.models, **kwargs) is False:
+            sys.exit(0)
 
     def __setattr__(self, name, value):
-        if name == 'mparm':
-            object.__setattr__(self, name, value)
-        else:
-            ModeledCommandParameter.__setattr__(self, name, value)
+        self.__modeled_command_parameter_setattr__(name, value, Material.models)
 
     def __str__(self):
         return 'Material:' + ModeledCommandParameter.__str__(self)

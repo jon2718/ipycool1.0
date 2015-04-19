@@ -2,7 +2,8 @@ from namelists import *
 from regions import *
 from icoolobject import ICoolObject
 from title import Title
-from icool_composites import *
+from fields import *
+from material import *
 
 
 class ICoolInput(ICoolObject):
@@ -35,65 +36,65 @@ class ICoolInput(ICoolObject):
     """
 
     command_params = {
-        'title': {'desc': 'Title of ICOOL simulation',
+        'title': {'desc': 'Title of ICOOL simulation ',
                   'doc': '',
                   'type': 'Title',
                   'req': True,
                   'default': None},
 
-        'cont': {'desc': 'ICOOL control variables',
+        'cont': {'desc': 'ICOOL control variables ',
                  'doc': '',
                  'type': 'Cont',
                  'req': True,
                  'default': None},
 
-        'bmt': {'desc': 'ICOOL beam generation variables',
+        'bmt': {'desc': 'ICOOL beam generation variables ',
                 'doc': '',
                 'type': 'Bmt',
                 'req': True,
                 'default': None},
 
-        'ints': {'desc': 'ICOOL interaction control variables',
+        'ints': {'desc': 'ICOOL interaction control variables ',
                  'doc': '',
                  'type': 'Ints',
                  'req': True,
                  'default': None},
 
-        'nhs': {'desc': 'ICOOL histogram definition variables',
+        'nhs': {'desc': 'ICOOL histogram definition variables ',
                 'doc': '',
                 'type': 'Nhs',
                 'req': False,
                 'default': Nhs()},
 
-        'nsc': {'desc': 'ICOOL scatterplot defintion variables',
+        'nsc': {'desc': 'ICOOL scatterplot defintion variables ',
                 'doc': '',
                 'type': 'Nsc',
-                       'req': False,
-                       'default': Nsc()},
+                'req': False,
+                'default': Nsc()},
 
-        'nzh': {'desc': 'ICOOL z history definition variables',
+        'nzh': {'desc': 'ICOOL z history definition variables ',
                 'doc': '',
                 'type': 'Nzh',
                 'req': False,
                 'default': Nzh()},
 
-        'nrh': {'desc': 'ICOOL r history definition variables',
+        'nrh': {'desc': 'ICOOL r history definition variables ',
                 'doc': '',
                 'type': 'Nrh',
                 'req': False,
                 'default': Nrh()},
 
-        'nem': {'desc': 'ICOOL emittance plane definition variables',
+        'nem': {'desc': 'ICOOL emittance plane definition variables ',
                 'doc': '',
                 'type': 'Nem',
-                       'req': False,
-                       'default': Nem()},
+                'req': False,
+                'default': Nem()},
 
         'ncv': {'desc': 'ICOOL covariance plane definition variables',
                 'doc': '',
                 'type': 'Ncv',
-                       'req': False,
-                       'default': Ncv()},
+                'req': False,
+                'default': Ncv()},
 
         'section': {'desc': 'ICOOL cooling section region definition ',
                     'doc': '',
@@ -102,11 +103,12 @@ class ICoolInput(ICoolObject):
                     'default': None}}
 
     def __init__(self, **kwargs):
-        ICoolObject.__init__(self, kwargs)
-        ICoolObject.setdefault(self, kwargs)
+        ICoolObject.check_command_params_init(self, ICoolInput.command_params, **kwargs)
+        ICoolObject.setdefault(self, ICoolInput.command_params, **kwargs)
+        ICoolObject.check_command_params_init(self, ICoolInput.command_params, **kwargs)
 
     def __call__(self, kwargs):
-        ICoolObject.__call__(self, kwargs)
+        pass
 
     def __str__(self):
         return ICoolObject.__str__(self, 'CONT')

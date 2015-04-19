@@ -4,10 +4,10 @@ from icoolobject import *
 class Region(ICoolObject):
 
     def __init__(self, kwargs):
-        ICoolObject.__init__(self, kwargs)
+        pass
 
     def __call__(self, **kwargs):
-        ICoolObject.__call__(self, kwargs)
+        pass
 
     def __str__(self):
         return '[A Region can be either a RegularRegion or PseudoRegion.]'
@@ -16,7 +16,7 @@ class Region(ICoolObject):
         return '[A Region can be either a RegularRegion or PseudoRegion.]'
 
     def __setattr__(self, name, value):
-        ICoolObject.__setattr__(self, name, value)
+        return
 
     def gen_for001(self, file):
         if hasattr(self, 'begtag'):

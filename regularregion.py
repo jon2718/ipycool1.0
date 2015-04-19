@@ -9,7 +9,7 @@ class RegularRegion(Region):
     """
 
     def __init__(self, kwargs):
-        Region.__init__(self, kwargs)
+        pass
 
     def __str__(self):
         return '[A RegularRegion can be either a SECTION, BEGS, REPEAT, CELL, SREGION, ENDREPEAT, ENDCELL,\

@@ -38,10 +38,8 @@ class HardEdgeTransport(ICoolComposite, Cell):
     def __init__(self, **kwargs):
         if ICoolObject.check_command_params_init(self, HardEdgeTransport.command_params, **kwargs) is False:
             sys.exit(0)
-        else:
-            ICoolObject.setall(self, HardEdgeTransport.command_params, **kwargs)
         he_sol = Sol(model='edge', ent_def=0, ex_def=0, foc_flag=0, bs=self.bs)
-        #Cell.__init__(self, ncells=1, flip=False, field=he_sol)
+        self.transport_cell =Cell(ncells=1, flip=False, field=he_sol)
         
 
     def __call__(self, **kwargs):

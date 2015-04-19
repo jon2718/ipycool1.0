@@ -38,18 +38,18 @@ class Section(RegularRegionContainer):
         'Transport',
         'Comment',
         'Repeat',
-        'HardEdgeSol']
+        ]
 
     command_params = {
 
     }
 
     def __init__(self, **kwargs):
-        RegularRegion.__init__(self, kwargs)
+        ICoolObject.check_command_params_init(self, Section.command_params, **kwargs)
         Container.__init__(self)
 
     def __setattr__(self, name, value):
-        Container.__setattr__(self, name, value)
+        self.__icool_setattr__(name, value)
 
     def __str__(self):
         return_str = 'SECTION\n'

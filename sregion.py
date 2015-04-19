@@ -75,8 +75,11 @@ class SRegion(RegularRegionContainer):
         }
 
     def __init__(self, **kwargs):
-        RegularRegion.__init__(self, kwargs)
+        ICoolObject.check_command_params_init(self, SRegion.command_params, **kwargs)
         Container.__init__(self)
+
+    def __setattr__(self, name, value):
+        self.__icool_setattr__(name, value)
 
     def __str__(self):
         ret_str = 'SRegion:\n' + 'slen=' + str(self.slen) + '\n' + 'nrreg=' + str(self.nrreg) + '\n' + \
@@ -88,32 +91,8 @@ class SRegion(RegularRegionContainer):
             str(self.slen) + '\n' + 'nrreg=' + str(self.nrreg) + \
             '\n' + 'zstep=' + str(self.zstep)
 
-    def __setattr__(self, name, value):
-        Container.__setattr__(self, name, value)
-
     def add_subregion(self, subregion):
-        try:
-            if self.check_type('SubRegion', subregion):
-                if not hasattr(self, 'subregions'):
-                    self.subregions = []
-                self.subregions.append(subregion)
-            else:
-                raise ie.InvalidType('SubRegion', subregion.__class__.__name__)
-        except ie.InvalidType as e:
-            print e
+        pass
 
     def add_subregions(self, subregion_list):
-        for subregion in subregion_list:
-            self.subregions.append(subregion)
-
-    """def gen_for001(self, file):
-        if hasattr(self, 'outstep'):
-            sreg_copy = copy.deepcopy(self)
-            delattr(sreg_copy, 'outstep')
-            sreg_copy.slen = self.outstep
-            nrep = int(self.slen/self.outstep)
-            r = Repeat(nrep=nrep)
-            r.add_enclosed_command(sreg_copy)
-            r.gen_for001(file)
-        else:
-            RegularRegionContainer.gen_for001(self, file)"""
+        pass

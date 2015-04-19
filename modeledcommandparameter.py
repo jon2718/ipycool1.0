@@ -1,54 +1,27 @@
 from icoolobject import ICoolObject
 import icool_exceptions as ie
+import inspect
 import sys
 
 class ModeledCommandParameter(ICoolObject):
 
-    def __init__(self, **kwargs):
-        """
-        Checks to see whether all required parameters are specified.  If not, raises exception and exits.
-        """
-        if self.check_command_params_init(kwargs) is False:
-            sys.exit(0)
-        else:
-            if self.check_no_model():
-                return
-            else:
-                setattr(
-                    self,
-                    self.get_model_descriptor_name(),
-                    self.get_model_name_in_dict(kwargs))
-                del kwargs[self.get_model_descriptor_name()]
-                self.setall(kwargs)
-
-    def __call__(self, kwargs):
-        if self.check_command_params_call(kwargs) is False:
-            sys.exit(0)
-        else:
-            if not self.get_model_descriptor_name() in kwargs.keys():
-                ICoolObject.__call__(self, kwargs)
-            else:
-                setattr(
-                    self,
-                    self.get_model_descriptor_name(),
-                    self.get_model_name_in_dict(kwargs))
-                del kwargs[self.get_model_descriptor_name()]
-                self.setall(kwargs)
-    
     def __modeled_command_parameter_setattr__(self, name, value, models):
         # Check whether the attribute being set is the model
         if name == self.get_model_descriptor_name(models):
             if self.check_valid_model(value, models) is False:
                 return
             new_model = False
+            
             # Check whether this is a new model (i.e. model was previously
             # defined)
             if hasattr(self, self.get_model_descriptor_name(models)):
                 new_model = True
+
                 # Delete all attributes of the current model
                 print 'Resetting model to ', value
                 self.reset_model(models)
             object.__setattr__(self, self.get_model_descriptor_name(models), value)
+
             # If new model, set all attributes of new model to 0.
             if new_model is True:
                 self.set_and_init_params_for_model(value, models)
@@ -312,8 +285,6 @@ class ModeledCommandParameter(ICoolObject):
             return None
         else:
             return dict[self.get_model_descriptor_name(models)]
-
-    
 
     def get_command_params_for_specified_input_model(
             self,

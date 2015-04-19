@@ -1,5 +1,6 @@
 from regularregion import RegularRegion
 from region import Region
+from icoolobject import *
 
 
 class SubRegion(RegularRegion):
@@ -24,13 +25,13 @@ class SubRegion(RegularRegion):
 
         'rlow': {'desc': 'Inner radius of this r subregion',
                  'doc': '',
-                 'type': 'Real',
+                 'type': 'Float',
                  'req': True,
                  'pos': 2},
 
         'rhigh': {'desc': 'Outer radius of this r subregion',
                   'doc': '',
-                  'type': 'Real',
+                  'type': 'Float',
                   'req': True,
                   'pos': 3},
 
@@ -48,7 +49,10 @@ class SubRegion(RegularRegion):
     }
 
     def __init__(self, **kwargs):
-        RegularRegion.__init__(self, kwargs)
+        ICoolObject.check_command_params_init(self, SubRegion.command_params, **kwargs)
+
+    def __setattr__(self, name, value):
+        self.__icool_setattr__(name, value, SubRegion.command_params)
 
     def __str__(self):
         return 'SubRegion:\n' + 'irreg=' + str(self.irreg) + '\n' + 'rlow=' + str(self.rlow) + '\n' + \
@@ -63,4 +67,4 @@ class SubRegion(RegularRegion):
             'Material=' + str(self.material)
 
     def __setattr__(self, name, value):
-        Region.__setattr__(self, name, value)
+        self.__icool_setattr__(name, value, SubRegion.command_params)

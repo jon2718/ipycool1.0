@@ -6,26 +6,20 @@ class Container(ICoolObject):
     """Abstract class container for other commands.
     """
 
-    def __init__(self, enclosed_commands=None):
-        if enclosed_commands is None:
-            self.enclosed_commands = []
-        else:
-            if self.check_allowed_enclosed_commands(enclosed_commands):
-                self.enclosed_commands = enclosed_commands
+    command_params = {
+        'enclosed_commands': {
+            'desc': 'Commands enclosed in this container',
+            'doc': '',
+            'type': 'Array',
+            'req': False}
+           
+    }
+
+    def __init__(self, **kwargs):
+        ICoolObject.check_command_params_init(self, Container.command_params, **kwargs)
 
     def __setattr__(self, name, value):
-        # command_parameters_dict = self.command_params
-        if name == 'enclosed_commands':
-            object.__setattr__(self, name, value)
-        else:
-            if not self.check_command_param(name):
-                return False
-            else:
-                if not self.check_command_param_type(name, value):
-                    return False
-                else:
-                    object.__setattr__(self, name, value)
-                    return True
+        self.__icool_setattr__(name, value, Container.command_params)
 
     def __str__(self):
         ret_str = ''
@@ -37,6 +31,8 @@ class Container(ICoolObject):
         if self.check_allowed_enclosed_command(command) is False:
             sys.exit(0)
         else:
+            if not hasattr(self, 'enclosed_commands'):
+                self.enclosed_commands = []
             self.enclosed_commands.append(command)
 
     def insert_enclosed_command(self, command, insert_point):
@@ -49,7 +45,6 @@ class Container(ICoolObject):
         del self.enclosed_commands[delete_point]
 
     def check_allowed_enclosed_command(self, command):
-        #print 'Base classes are: ', self.__class__.__bases__
         try:
             if command.__class__.__name__ not in self.allowed_enclosed_commands:
                 raise ie.ContainerCommandError(

@@ -21,7 +21,7 @@ class Bmt(ICoolNameListContainer):
             'default': False}}
 
     def __init__(self, **kwargs):
-        ICoolObject.__init__(self, kwargs)
+        ICoolObject.check_command_params_init(self, Bmt.command_params, **kwargs)
         Container.__init__(self)
 
     def __call__(self, **kwargs):
@@ -29,4 +29,4 @@ class Bmt(ICoolNameListContainer):
         pass
 
     def __setattr__(self, name, value):
-        Container.__setattr__(self, name, value)
+        self.__icool_setattr__(name, value, Bmt.command_params)

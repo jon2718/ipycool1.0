@@ -8,8 +8,8 @@ class PseudoRegion(Region):
     OUTPUT, REFP, REF2, RESET, RKICK, ROTATE, TAPER, TILT, TRANSPORT, BACKGROUND, BFIELD, ENDB, ! or &
     """
 
-    def __init__(self, kwargs):
-        Region.__init__(self, kwargs)
+    def __init__(self, **kwargs):
+        pass
 
     def __str__(self):
         return '[A PseudoRegion can be either a APERTURE, CUTV, DENP, DENS, DISP, DUMMY, DVAR, EDGE, GRID\

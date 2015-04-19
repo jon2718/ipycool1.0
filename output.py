@@ -11,4 +11,4 @@ class Output(PseudoRegion):
     command_params = {}
 
     def __init__(self):
-        PseudoRegion.__init__(self, {})
+        pass

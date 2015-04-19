@@ -12,21 +12,17 @@ class Field(ModeledCommandParameter):
     FPARM - 15 parameters describing the field.  The first parameter is the model.
     """
 
-    def __init__(self, ftag, kwargs):
-        ModeledCommandParameter.__init__(self, kwargs)
-        self.ftag = ftag
+    def __init__(self, **kwargs):
+        pass
 
-    def __call__(self, kwargs):
-        ModeledCommandParameter.__call__(self, kwargs)
+    def __call__(self, **kwargs):
+        pass
 
     def __setattr__(self, name, value):
-        if name == 'fparm':
-            object.__setattr__(self, name, value)
-        else:
-            ModeledCommandParameter.__setattr__(self, name, value)
+        pass
 
     def __str__(self):
-        return self.ftag + ':' + 'Field:' + \
+        return self.begtag + ':' + 'Field:' + \
             ModeledCommandParameter.__str__(self)
 
     def gen_fparm(self):
