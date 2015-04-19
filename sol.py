@@ -89,10 +89,11 @@ class Sol(Field):
     This model applies a geometry cut on particles whose radius exceeds the specified radial taper.
 
     """
-
     begtag = 'SOL'
     endtag = ''
+
     models = {
+
         'model_descriptor': {
             'desc': 'Name of model parameter descriptor',
             'name': 'model',
@@ -302,3 +303,6 @@ class Sol(Field):
 
     def __str__(self):
         return Field.__str__(self)
+
+    def gen_for001(self, file):
+        ModeledCommandParameter.gen_for001(self, file, Sol.models)

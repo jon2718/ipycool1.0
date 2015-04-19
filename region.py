@@ -18,9 +18,8 @@ class Region(ICoolObject):
     def __setattr__(self, name, value):
         return
 
-    def gen_for001(self, file):
+    def gen_for001(self, file, command_params_dict):
         if hasattr(self, 'begtag'):
-            print 'Writing begtag'
             file.write(self.get_begtag())
             file.write('\n')
         parm = self.gen_parm()
@@ -34,7 +33,7 @@ class Region(ICoolObject):
                 count = 0
                 split_num = split_num + 1
                 cur_split = splits[split_num]
-            print 'Command is: ', command
+            #print 'Command is: ', command
             if hasattr(command, 'gen_for001'):
                 command.gen_for001(file)
             else:

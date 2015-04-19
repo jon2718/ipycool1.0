@@ -219,13 +219,12 @@ class ICoolObject(object):
             return command_parameters_dict[command_param]['req']
 
     def gen_parm(self):
-        command_params = self.get_command_params()
+        command_params = self.command_params
         parm = [None] * self.num_params
         for key in command_params:
             pos = int(command_params[key]['pos']) - 1
             val = getattr(self, key)
             parm[pos] = val
-        print parm
         return parm
 
     def for001_str_gen(self, value):
@@ -239,7 +238,7 @@ class ICoolObject(object):
 
     def get_begtag(self):
         return self.begtag
-
+        
     def get_endtag(self):
         return self.endtag
 

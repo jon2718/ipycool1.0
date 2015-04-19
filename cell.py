@@ -8,10 +8,7 @@ class Cell(RegularRegionContainer):
     It has an associated cell field, which is superimposed on the individual region fields. Cell sections cannot
     be nested in other cell sections. (see parameters below)
     """
-    begtag = 'CELL'
-    endtag = 'ENDCELL'
-    num_params = 3
-    for001_format = {'line_splits': [1, 1, 1]}
+    
 
     allowed_enclosed_commands = [
         'SRegion',
@@ -31,7 +28,15 @@ class Cell(RegularRegionContainer):
         'Transport',
         'Repeat']
 
+    begtag = 'CELL'
+    endtag = 'ENDCELL'
+    num_params = 3
+
+    for001_format = {'line_splits': [1, 1, 1]}
+
+
     command_params = {
+       
         'ncells': {
             'desc': 'Number of times to repeat this command in this cell block',
             'doc': '',
@@ -67,3 +72,6 @@ class Cell(RegularRegionContainer):
 
     def __repr__(self):
         return 'Cell\n'
+
+    def gen_for001(self, file):
+        RegularRegionContainer.gen_for001(self, file, Cell.command_params)

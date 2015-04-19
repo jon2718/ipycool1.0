@@ -307,27 +307,24 @@ class ModeledCommandParameter(ICoolObject):
                 high_pos = key['pos']
         self.parms = [0] * high_pos
 
-    def gen_parm(self):
-        num_parms = self.get_num_params()
-        command_params = self.get_command_params()
+
+    def gen_parm(self, models):
+        num_parms = self.get_num_params(models)
+        command_params = self.get_model_parms_dict(models)
         parm = [0] * num_parms
         for key in command_params:
             pos = int(command_params[key]['pos']) - 1
-            if key == self.get_model_descriptor_name():
-                val = self.get_icool_model_name()
-                print 'Using icool name', val
+            if key == self.get_model_descriptor_name(models):
+                val = self.get_icool_model_name(models)
             else:
                 val = getattr(self, key)
             parm[pos] = val
-        print parm
         return parm
 
-    def gen_for001(self, file):
-        if hasattr(self, 'begtag'):
-            print 'Writing begtag'
-            file.write(self.get_begtag())
-            file.write('\n')
-        parm = self.gen_parm()
+    def gen_for001(self, file, models):
+        file.write(self.get_begtag())
+        file.write('\n')
+        parm = self.gen_parm(models)
         splits = self.get_line_splits()
         count = 0
         split_num = 0
@@ -343,7 +340,6 @@ class ModeledCommandParameter(ICoolObject):
             count = count + 1
         file.write('\n')
         if hasattr(self, 'endtag'):
-            print 'Writing endtag'
             file.write('\n')
             file.write(self.get_endtag())
             file.write('\n')

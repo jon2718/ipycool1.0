@@ -22,8 +22,9 @@ class Field(ModeledCommandParameter):
         pass
 
     def __str__(self):
-        return self.begtag + ':' + 'Field:' + \
-            ModeledCommandParameter.__str__(self)
+    	pass
+        #return self.begtag + ':' + 'Field:' + \
+        #    ModeledCommandParameter.__str__(self)
 
     def gen_fparm(self):
         self.fparm = [0] * 10

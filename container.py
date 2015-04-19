@@ -59,9 +59,9 @@ class Container(ICoolObject):
         pass
 
     def gen_for001(self, file):
-        for command in self.enclosed_commands:
-            print 'Command is: ', command
-            if hasattr(command, 'gen_for001'):
-                command.gen_for001(file)
-            else:
-                file.write(self.for001_str_gen(command))
+        if hasattr(self, 'enclosed_commands'):
+            for command in self.enclosed_commands:
+                if hasattr(command, 'gen_for001'):
+                    command.gen_for001(file)
+                else:
+                    file.write(self.for001_str_gen(command))
