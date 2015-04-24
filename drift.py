@@ -14,7 +14,7 @@ class Drift(SRegion):
     """
     begtag = ''
     endtag = ''
-    num_params = 10
+    num_params = 0
 
     command_params = {
         'slen': {'desc': 'SRegion length',

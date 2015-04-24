@@ -327,7 +327,7 @@ class Material(ModeledCommandParameter):
     def __str__(self):
         return 'Material:' + ModeledCommandParameter.__str__(self)
 
-    def gen_mparm(self):
+    """def gen_mparm(self):
         self.mparm = [0] * 12
         cur_model = self.get_model_dict(self.geom)
         for key in cur_model:
@@ -344,4 +344,4 @@ class Material(ModeledCommandParameter):
         file.write('\n')
         for s in mparm:
             file.write(s)
-            file.write(" ")
+            file.write(" ")"""

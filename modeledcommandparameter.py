@@ -350,7 +350,7 @@ class ModeledCommandParameter(ICoolObject):
             count = count + 1
         file.write('\n')
         if hasattr(self, 'endtag'):
-            file.write('\n')
+            #file.write('\n')
             file.write(self.get_endtag())
             file.write('\n')
 

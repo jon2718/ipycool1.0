@@ -154,14 +154,14 @@ class Ints(ICoolNameList):
             'desc': 'Kinetic energy of electrons, above which delta rays are discretely '
             'simulated [GeV] ',
             'doc': '',
-            'type': 'Real',
+            'type': 'Float',
             'req': False,
             'default': 0.003},
         'dcutm': {
             'desc': 'Kinetic energy of muons and other heavy particles, above which delta '
             'rays are discretely simulated [GeV] ',
             'doc': '',
-            'type': 'Real',
+            'type': 'Float',
             'req': False,
             'default': 0.003},
         'elmscor': {
@@ -178,13 +178,13 @@ class Ints(ICoolNameList):
             'χC2 in Moliere multiple scattering theory '
             'times relative to reference particle at plane IZFILE.',
             'doc': '',
-            'type': 'Real',
+            'type': 'Float',
             'req': False,
             'default': 1.0},
         'facmms': {
             'desc': 'Factor to correct screening angle squared χA2 in Moliere multiple ',
             'doc': '',
-            'type': 'Real',
+            'type': 'Float',
             'req': False,
             'default': 1.0},
         'fastdecay': {
@@ -196,64 +196,63 @@ class Ints(ICoolNameList):
         'frfbunsc': {
             'desc': '(R) RF frequency used for space charge model 4. [MHz] (201.) ',
             'doc': '',
-            'type': 'Real',
+            'type': 'Float',
             'req': False,
             'default': 201},
         'parbunsc': {
             'desc': 'Number of muons per bunch for space charge calculation ',
             'doc': '',
-            'type': 'Real',
+            'type': 'Float',
             'req': False,
             'default': 4E12},
         'pdelev4': {
             'desc': 'Momentum for DELEV=4 calculation',
             'doc': '',
-            'type': 'Real',
+            'type': 'Float',
             'req': False,
             'default': 0.200},
         'wanga': {
             'desc': 'Wang parameter A ',
             'doc': 'The Wang distribution is given by '
             'd2σ/dp dΩ = A pMAX x (1-x) exp{-BxC – DpT} where x = pL / pMAX',
-            'type': 'Real',
+            'type': 'Float',
             'req': False,
             'default': 90.1},
         'wangb': {
             'desc': 'Wang parameter B',
             'doc': '',
-            'type': 'Real',
+            'type': 'Float',
             'req': False,
             'default': 3.35},
         'wangc': {
             'desc': 'Wang parameter C',
             'doc': '',
-            'type': 'Real',
+            'type': 'Float',
             'req': False,
             'default': 1.22},
         'wangd': {
             'desc': 'Wang parameter D',
             'doc': '',
-            'type': 'Real',
+            'type': 'Float',
             'req': False,
             'default': 4.66},
         'wangpmx': {
             'desc': 'Wang parameter pMAX (1.500) The sign of this quantity is used to select '
             'π+ or π- production.',
             'doc': '',
-            'type': 'Real',
+            'type': 'Float',
             'req': False,
             'default': 1.5},
         'wangfmx': {
             'desc': 'The maximum value of the Wang differential cross section',
             'doc': '',
-            'type': 'Real',
+            'type': 'Float',
             'req': False,
             'default': 13.706},
     }
 
     def __init__(self, **kwargs):
         ICoolObject.check_command_params_init(self, Ints.command_params, **kwargs)
-        Container.__init__(self)
 
     def __call__(self, **kwargs):
         pass

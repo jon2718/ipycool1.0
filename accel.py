@@ -550,14 +550,6 @@ class Accel(Field):
 
     def __setattr__(self, name, value):
         self.__modeled_command_parameter_setattr__(name, value, Accel.models)
-        #if name == 'ftag':
-        #    if value == 'ACCEL':
-        #        object.__setattr__(self, name, value)
-        #    else:
-                # Should raise exception here
-        #        print '\n Illegal attempt to set incorrect ftag.\n'
-        #else:
-        #    Field.__setattr__(self, name, value)
 
     def __str__(self):
         return Field.__str__(self)
