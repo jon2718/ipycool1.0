@@ -15,24 +15,17 @@ class NoField(Field):
     }
 
     def __init__(self, **kwargs):
-        Field.__init__(self, 'NONE', kwargs)
+        if ModeledCommandParameter.check_command_params_init(self, NoField.models, **kwargs) is False:
+            sys.exit(0)
 
     def __call__(self, **kwargs):
-        Field.__call__(self, kwargs)
+        pass
 
     def __setattr__(self, name, value):
-        if name == 'ftag':
-            if value == 'NONE':
-                object.__setattr__(self, name, value)
-            else:
-                # Should raise exception here
-                print '\n Illegal attempt to set incorrect ftag.\n'
-        else:
-            Field.__setattr__(self, name, value)
+        self.__modeled_command_parameter_setattr__(name, value, NoField.models)
 
     def __str__(self):
-        # return Field.__str__(self)
-        return 'NONE'
+        return Field.__str__(self)
 
-    def gen_fparm(self):
-        Field.gen_fparm(self)
+    def gen_for001(self, file):
+        ModeledCommandParameter.gen_for001(self, file)
