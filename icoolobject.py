@@ -253,8 +253,14 @@ class ICoolObject(object):
                 dall.update(a.command_params)
         return dall
 
+    def get_all_ancestors(self):
+        return map(self.name, inspect.getmro(self.__class__))
+
     def get_command_params(self):
         return self.command_params
+
+    def name(self, cls):
+        return cls.__name__
 
 from field import Field
 from material import Material

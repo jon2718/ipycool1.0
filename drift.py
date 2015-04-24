@@ -6,7 +6,7 @@ from icoolobject import ICoolObject
 from nofield import NoField
 
 
-class CylVacDrift(ICoolComposite):
+class Drift(ICoolObject):
     """
     Drift region.
     By default will generate a vacuum drift region with cylindrical geometry.
@@ -50,7 +50,7 @@ class CylVacDrift(ICoolComposite):
         ICoolObject.__call__(self, kwargs)
 
     def __str__(self):
-        return 'CylVacDrift'
+        return 'Drift'
 
     def gen_for001(self, file):
         self.sreg.gen_for001(file)

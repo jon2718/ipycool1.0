@@ -7,7 +7,7 @@ from repeat import Repeat
 from modeledcommandparameter import *
 
 
-class HardEdgeSol(ICoolObject):
+class HardEdgeSol(SRegion):
     """
     Hard edge solenoid comprises:
     (1) Entrance focusing region;

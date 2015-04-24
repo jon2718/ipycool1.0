@@ -46,11 +46,12 @@ class Container(ICoolObject):
         del self.enclosed_commands[delete_point]
 
     def check_allowed_enclosed_command(self, command):
-        ancestors = self.get_all_ancestor_allowed_enclosed_commands()
+        enclosed_ancestors = self.get_all_ancestor_allowed_enclosed_commands()
+        command_ancestors = command.get_all_ancestors()
         try:
             #if command.__class__.__name__ not in self.allowed_enclosed_commands:
             #if command.__class__.__name__ not in ancestors:
-            if not any(x in ancestors for x in self.allowed_enclosed_commands):
+            if not any(x in enclosed_ancestors for x in command_ancestors):
                 raise ie.ContainerCommandError(
                     command,
                     self.allowed_enclosed_commands)
