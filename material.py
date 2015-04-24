@@ -34,6 +34,9 @@ class Material(ModeledCommandParameter):
     ...
 
     """
+    begtag = ''
+    endtag = ''
+    
     materials = {
         'VAC': {'desc': 'Vacuum (no material)', 'icool_material_name': ''},
         'GH': {'desc': 'Gaseous hydrogen'},

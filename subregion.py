@@ -68,3 +68,7 @@ class SubRegion(RegularRegion):
 
     def __setattr__(self, name, value):
         self.__icool_setattr__(name, value, SubRegion.command_params)
+
+
+    def gen_for001(self, file):
+        Region.gen_for001(self, file)

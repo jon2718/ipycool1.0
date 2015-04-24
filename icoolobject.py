@@ -157,7 +157,7 @@ class ICoolObject(object):
         Returns True if the types match and False otherwise.
         """
         provided_type_name = provided_type.__class__.__name__
-        print icool_type, provided_type_name
+        #print icool_type, provided_type_name
         if icool_type == 'Float':
             if provided_type_name == 'int' or provided_type_name == 'long' or provided_type_name == 'float':
                 return True
@@ -252,6 +252,9 @@ class ICoolObject(object):
             if hasattr(a, 'command_params'):
                 dall.update(a.command_params)
         return dall
+
+    def get_command_params(self):
+        return self.command_params
 
 from field import Field
 from material import Material

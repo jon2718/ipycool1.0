@@ -96,3 +96,6 @@ class SRegion(RegularRegionContainer):
 
     def add_subregions(self, subregion_list):
         pass
+
+    def gen_for001(self, file):
+        RegularRegionContainer.gen_for001(self, file)

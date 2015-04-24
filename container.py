@@ -33,6 +33,7 @@ class Container(ICoolObject):
         else:
             if not hasattr(self, 'enclosed_commands'):
                 self.enclosed_commands = []
+                print 'adding enclosed commands'
             self.enclosed_commands.append(command)
 
     def insert_enclosed_command(self, command, insert_point):
@@ -45,8 +46,11 @@ class Container(ICoolObject):
         del self.enclosed_commands[delete_point]
 
     def check_allowed_enclosed_command(self, command):
+        ancestors = self.get_all_ancestor_allowed_enclosed_commands()
         try:
-            if command.__class__.__name__ not in self.allowed_enclosed_commands:
+            #if command.__class__.__name__ not in self.allowed_enclosed_commands:
+            #if command.__class__.__name__ not in ancestors:
+            if not any(x in ancestors for x in self.allowed_enclosed_commands):
                 raise ie.ContainerCommandError(
                     command,
                     self.allowed_enclosed_commands)
@@ -58,6 +62,14 @@ class Container(ICoolObject):
     def check_allowed_enclosed_commands(self, enclosed_commands):
         pass
 
+    def get_all_ancestor_allowed_enclosed_commands(self):
+        ancestors = inspect.getmro(self.__class__)
+        dall = []
+        for a in ancestors:
+            if hasattr(a, 'allowed_enclosed_commands'):
+                dall = dall + a.allowed_enclosed_commands
+        return dall
+
     def gen_for001(self, file):
         if hasattr(self, 'enclosed_commands'):
             for command in self.enclosed_commands:
@@ -65,3 +77,4 @@ class Container(ICoolObject):
                     command.gen_for001(file)
                 else:
                     file.write(self.for001_str_gen(command))
+

@@ -256,10 +256,12 @@ class ModeledCommandParameter(ICoolObject):
         """
         return models[str(model)]['parms']
   
-    def get_num_params(self, models):
+    def get_num_params(self, models=None):
         """
         Returns the number of parameters for model.
         """
+        if models is None:
+            models = self.models
         return self.get_model_descriptor(models)['num_parms']
 
     def get_icool_model_name(self, models):
@@ -294,13 +296,15 @@ class ModeledCommandParameter(ICoolObject):
             self.get_model_descriptor_name(models)]
         return self.get_model_dict(specified_model, models)
 
-    def get_line_splits(self):
+    def get_line_splits(self, models=None):
+        if models is None:
+            models = self.models
         return self.models['model_descriptor']['for001_format']['line_splits']
 
     ##################################################
 
     def set_model_parameters(self):
-        parms_dict = self.get_model_parms_dict()
+        parms_dict = self.get_model_parms_dict(self.models)
         high_pos = 0
         for key in parms_dict:
             if key['pos'] > high_pos:
@@ -308,9 +312,10 @@ class ModeledCommandParameter(ICoolObject):
         self.parms = [0] * high_pos
 
 
-    def gen_parm(self, models):
-        num_parms = self.get_num_params(models)
-        command_params = self.get_model_parms_dict(models)
+    def gen_parm(self):
+        models = self.models
+        num_parms = self.get_num_params()
+        command_params = self.get_model_parms_dict(self.models)
         parm = [0] * num_parms
         for key in command_params:
             pos = int(command_params[key]['pos']) - 1
@@ -321,10 +326,15 @@ class ModeledCommandParameter(ICoolObject):
             parm[pos] = val
         return parm
 
-    def gen_for001(self, file, models):
+
+    def get_command_params(self):
+        return self.get_model_parms_dict(self.models)
+
+    def gen_for001(self, file):
+        models = self.models
         file.write(self.get_begtag())
         file.write('\n')
-        parm = self.gen_parm(models)
+        parm = self.gen_parm()
         splits = self.get_line_splits()
         count = 0
         split_num = 0

@@ -5,17 +5,15 @@ from icoolobject import ICoolObject
 from cell import *
 
 
-class HardEdgeTransport(ICoolComposite, Cell):
+class HardEdgeTransport(Cell):
     """
     Hard edge transport comprises:
     (1) Cell with hard edge solenoid field (SOL model 8)
     """
-    begtag = ''
-    endtag = ''
     num_params = 3
     classname = 'HardEdgeTransport'
 
-    command_params = {
+    command_params_ext = {
         'bs':   {'desc': 'Field strength (Tesla)',
                  'doc': '',
                  'type': 'Float',
@@ -26,33 +24,25 @@ class HardEdgeTransport(ICoolComposite, Cell):
                    'doc': 'If .true. flip cell field for alternate cells',
                    'type': 'Logical',
                    'req': True,
-                   'pos': None},
-
-        'transport_cell': {'desc': 'Transport cell',
-                           'doc': '',
-                           'type': 'Cell',
-                           'req': False,
-                           'pos': None}
+                   'pos': None}
     }
     
     def __init__(self, **kwargs):
-        if ICoolObject.check_command_params_init(self, HardEdgeTransport.command_params, **kwargs) is False:
+        if ICoolObject.check_command_params_init(self, HardEdgeTransport.command_params_ext, **kwargs) is False:
             sys.exit(0)
         he_sol = Sol(model='edge', ent_def=0, ex_def=0, foc_flag=0, bs=self.bs)
-        self.transport_cell =Cell(ncells=1, flip=False, field=he_sol)
-        
+        Cell.__init__(self, ncells=1, flip=False, field=he_sol)
+
 
     def __call__(self, **kwargs):
         ICoolObject.__call__(self, kwargs)
 
     def __setattr__(self, name, value):
-        ICoolObject.__icool_setattr__(self, name, value, HardEdgeTransport.command_params)
+        ICoolObject.__icool_setattr__(self, name, value)
 
     def __str__(self):
         return 'HardEdgeTransport'
 
-    def add_enclosed_command(self, command):
-        self.transport_cell.add_enclosed_command(command)
-
     def gen_for001(self, file):
-        self.gen_for001(file)
+        RegularRegionContainer.gen_for001(self, file)
+        #Cell.gen_for001(self, file)

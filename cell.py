@@ -74,4 +74,4 @@ class Cell(RegularRegionContainer):
         return 'Cell\n'
 
     def gen_for001(self, file):
-        RegularRegionContainer.gen_for001(self, file, Cell.command_params)
+        RegularRegionContainer.gen_for001(self, file)

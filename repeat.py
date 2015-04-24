@@ -69,7 +69,7 @@ class Repeat(RegularRegionContainer):
         Container.__init__(self)
 
     def __setattr__(self, name, value):
-        self.__icool_setattr__(name, value, Repeat.command_params)
+        self.__icool_setattr__(name, value)
 
     def __str__(self):
         return_str = 'REPEAT\n' + str(Container.__str__(self)) + 'ENDREPEAT\n'

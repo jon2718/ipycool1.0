@@ -305,4 +305,4 @@ class Sol(Field):
         return Field.__str__(self)
 
     def gen_for001(self, file):
-        ModeledCommandParameter.gen_for001(self, file, Sol.models)
+        ModeledCommandParameter.gen_for001(self, file)
